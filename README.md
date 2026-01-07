@@ -1,11 +1,4 @@
-# exp-2026-02-LDHF-001-ai-money-physical-rules
-事故 ①：The DAO（2016）——规则被合法利用的开始
 
-The DAO 是一个部署在以太坊上的去中心化投资基金，其目标是通过智能合约，让参与者无需信任任何人，就可以共同决定资金的投向。参与者通过向合约投入 ETH 获得 DAO Token，并用这些 Token 对投资提案进行投票。
-在设计上，The DAO 希望用代码取代传统基金中的管理者，从而消除人为作恶的可能性。
-
-问题出现在资金退出（withdraw）机制上。
-当用户选择退出时，合约会按照其持有的 Token 数量，向用户地址发送相应的 ETH，并同时更新用户在系统中的余额状态。
 
 # LDHF-001 — AI + Money: Physical Rules (Experiment)
 
