@@ -7,46 +7,77 @@ The DAO 是一个部署在以太坊上的去中心化投资基金，其目标是
 问题出现在资金退出（withdraw）机制上。
 当用户选择退出时，合约会按照其持有的 Token 数量，向用户地址发送相应的 ETH，并同时更新用户在系统中的余额状态。
 
-攻击者发现，在合约更新内部状态之前，ETH 已经被发送出去。
-利用这一点，攻击者构造了一个合约地址，在接收 ETH 的同时，递归地再次调用退出函数。由于系统尚未完成状态更新，它“认为”攻击者仍然拥有原有的余额，于是一次又一次地合法转账。
+# LDHF-001 — AI + Money: Physical Rules (Experiment)
 
-整个过程中：
-	•	没有破解
-	•	没有越权
-	•	没有违反任何合约规则
+## Experiment ID
+LDHF-001
 
-合约只是冷静而准确地执行了它被写下的逻辑。
-最终，约 360 万枚 ETH 被转移到攻击者控制的子 DAO 中，造成当时以太坊生态中最大的一次系统性事故。
+## Experiment period
+10 days (Day 1 – Day 10)
+⚠️ Timebox: End at Day 10. No extensions.
 
-从 The DAO 事故抽象出的两条物理规则
+## Goal (one sentence)
+Within 10 days, deliver a public document titled "AI + Money: 5 Incidents → 10 Physical Rules" and have it seen by at least one external person.
 
-物理规则 1：状态未更新前，系统无法感知“已经发生的事实”
+## Unique deliverable (third-party visible, independently hostable, allowed to be rough)
+- A single public document: `README.md` (root) + supporting files under `docs/`.
+- Final public URL must exist on GitHub (repo public) by Day 1 and updated every day by commit.
 
-规则表述
+## Allowed failure conditions (still count as experiment success)
+- The document is messy or incomplete.
+- No stars/likes/comments on GitHub.
+- Personal judgment: "it's ugly" or "not ready".
 
-一旦外部调用发生在内部状态更新之前，
-在可重入的执行环境中，
-系统就会重复基于旧状态做出“合法但错误”的执行。
+---
 
-解释（面向系统，不是面向人）
+## Where to store content
+- Root README contains experiment metadata and link to `docs/`.
+- Accident descriptions and extracted rules go under `docs/` as separate markdown files (one file per incident).
+  - `docs/the_dao_en.md`
+  - `docs/flashloan_en.md`
+  - `docs/governance_attack_en.md`
+  - `docs/liquidation_chain_en.md`
+  - `docs/agent_misdecision_en.md`
 
-The DAO 合约在执行退出逻辑时，先向外部地址发送 ETH，再更新用户余额。
-对系统而言，在状态变量被修改之前，“用户余额未变化”这个事实仍然成立。
-因此，当攻击者通过外部合约再次进入同一函数时，系统并不知道“钱已经转走过一次”，只会继续按旧状态执行。
+**Do NOT** keep the full accident narrative only inside README. README is orchestration & index; accident bodies live in `docs/` files.
 
-⸻
+---
 
-物理规则 2：代码不会为“整体结果”负责，只会为“当前指令”负责
+## Publishing rules (must obey)
+1. Repository MUST be public on Day 1.
+2. Commit at least once per day. Commit message must include `Day X` (e.g., "Day 2 — add The DAO rules translation").
+3. Do not postpone publishing until "better". Publish the rough version immediately.
+4. Do not expand scope (no extra incidents, no structural changes).
+5. No rewriting entire history—use forward commits only.
 
-规则表述
+---
 
-一旦系统被设计为只保证单步逻辑正确，
-而不对跨步骤的整体一致性进行约束，
-那么系统就可能在完全合法的执行中走向灾难性结果。
+## Daily MDP (30–60 minutes)
+Each day, perform exactly one Minimal Doable Product (MDP) action and commit:
+- Day 1: Create repo + push initial `README.md` minimal (link to docs folder).
+- Day 2: Add `docs/the_dao_en.md` (translation + extracted rules) and commit.
+- Day 3–9: Add each incident file or rules increments.
+- Day 10: Consolidate into final `README.md` and publish final link.
 
-解释（面向系统，不是面向道德）
+Checkboxes (manually tick in README after commit):
+- [ ] Day 1
+- [ ] Day 2
+- ...
+- [ ] Day 10
 
-The DAO 的每一次转账行为本身都是合法的、符合合约规则的。
-系统从未被要求判断“这次执行是否会导致整体资金被掏空”，
-它只被要求在“当前条件满足时执行当前指令”。
-最终结果不是因为代码犯错，而是因为代码被严格、忠实地执行。
+---
+
+## Day 10 mandatory closeout (must complete)
+1. Public deliverable URL (paste below).
+2. Short facts-only record of what happened and whether anyone saw it.
+3. Keep improvement small: change only one parameter next run.
+
+---
+
+## Acceptance criterion (single rule)
+- If there exists a public deliverable URL (repo + docs), experiment succeeded.
+- Feelings, judgments, and perceived quality are irrelevant.
+
+---
+
+## Minimal repo structure (do not change)
