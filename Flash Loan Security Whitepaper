@@ -1,0 +1,180 @@
+# Flash Loan Security Whitepaper
+
+## Abstract
+
+This whitepaper provides a systematic, security-oriented analysis of flash loans in decentralized finance (DeFi). It explains what flash loans are, why they are structurally neutral tools, how they became a dominant attack primitive, and what their existence reveals about smart contract system design. The document distills lessons from historical incidents and proposes a rigorous defense framework suitable for protocol designers, auditors, and security researchers.
+
+---
+
+## 1. Introduction
+
+Flash loans are often misunderstood as vulnerabilities themselves. In reality, they are a *capability amplifier*: a mechanism that allows capital to be temporarily mobilized at extreme scale within a single atomic transaction. This whitepaper reframes flash loans not as an exploit, but as a stress test that exposes latent design flaws in DeFi systems.
+
+---
+
+## 2. What Is a Flash Loan?
+
+A flash loan is an uncollateralized loan that must be borrowed and repaid within the same transaction. If repayment fails, the entire transaction reverts, leaving the lender with zero risk.
+
+Key properties:
+
+* **Atomicity**: Borrow, use, and repay occur in one transaction.
+* **No collateral**: Security is enforced by transaction reversion.
+* **Composable**: Funds can interact with arbitrary protocols mid-transaction.
+
+Flash loans were first popularized by Aave and later adopted by dYdX, Uniswap (via flash swaps), Balancer, and others.
+
+---
+
+## 3. Why Flash Loans Exist
+
+Flash loans are not inherently adversarial. Legitimate use cases include:
+
+* Arbitrage across DEXs
+* Collateral swapping
+* Liquidations
+* Debt refinancing
+
+From a systems perspective, flash loans represent *perfect liquidity under perfect enforcement*.
+
+---
+
+## 4. Flash Loans as an Attack Primitive
+
+Flash loans enable attackers to bypass capital constraints. Any attack that previously required large upfront capital can now be executed by anyone with technical competence.
+
+Flash loans do **not** create vulnerabilities; they:
+
+* Compress time
+* Amplify scale
+* Remove financial friction
+
+---
+
+## 5. Canonical Flash Loan Attack Pattern
+
+Most flash loan attacks follow a repeatable structure:
+
+1. Borrow large capital via flash loan
+2. Manipulate an on-chain state (price, balance, voting power)
+3. Trigger protocol logic relying on the manipulated state
+4. Extract value
+5. Repay flash loan
+
+This entire sequence executes atomically.
+
+---
+
+## 6. Historical Incident Classes
+
+### 6.1 Oracle Manipulation
+
+Protocols relying on spot prices from AMMs are vulnerable to temporary price distortion.
+
+### 6.2 Reentrancy + Capital Amplification
+
+Flash loans magnify the impact of reentrancy by providing massive transient liquidity.
+
+### 6.3 Governance Attacks
+
+Voting power borrowed via flash loans enables temporary control over governance.
+
+### 6.4 Accounting Assumption Failures
+
+Protocols assuming balance stability within a transaction fail under flash loan conditions.
+
+---
+
+## 7. The Core Failure: Broken Assumptions
+
+Every flash loan incident traces back to one root cause:
+
+> **The protocol assumed a property of the system that is not enforced by the EVM.**
+
+Common invalid assumptions:
+
+* Prices are stable within a block
+* Capital reflects long-term ownership
+* Calls are isolated
+* Time equals blocks
+
+Flash loans violate all of these assumptions simultaneously.
+
+---
+
+## 8. Defensive Design Principles
+
+### 8.1 Oracle Robustness
+
+* Use TWAPs
+* Use multi-source oracles
+* Introduce update delays
+
+### 8.2 Temporal Separation
+
+* Enforce multi-transaction workflows
+* Require state persistence across blocks
+
+### 8.3 Explicit Invariant Design
+
+* Encode invariants directly in code
+* Validate post-conditions after external calls
+
+### 8.4 Governance Hardening
+
+* Snapshot voting balances
+* Require proposal warm-up periods
+
+---
+
+## 9. Auditing Flash Loan Risk
+
+Security reviews should explicitly ask:
+
+* What happens if the attacker has infinite capital for one transaction?
+* Which variables are read once but assumed stable?
+* Can value extraction occur before invariants are rechecked?
+
+If a protocol fails under these conditions, it is flash-loan exploitable by definition.
+
+---
+
+## 10. Flash Loans as a Design Lens
+
+Flash loans should be treated as a *formal adversary model*, similar to:
+
+* Dolev–Yao in cryptography
+* Byzantine actors in distributed systems
+
+If your protocol is safe under flash loans, it is likely robust under all realistic conditions.
+
+---
+
+## 11. Conclusion
+
+Flash loans did not break DeFi. They revealed it.
+
+They force protocol designers to confront reality: on-chain systems are adversarial, composable, and atomic by default. Security emerges not from restricting attackers, but from removing false assumptions.
+
+Protocols that internalize this lesson will survive. Those that do not will eventually fail.
+
+---
+
+## Appendix A: Flash Loan Security Checklist
+
+* No spot-price dependence
+* No same-transaction trust assumptions
+* All invariants enforced post-call
+* Governance resistant to transient power
+
+---
+
+## Appendix B: Glossary
+
+* **Atomic Transaction**: A transaction that either fully succeeds or fully reverts
+* **TWAP**: Time-Weighted Average Price
+* **Composable**: Interoperable with other protocols within the same transaction
+
+---
+
+*End of Whitepaper*
